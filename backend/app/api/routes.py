@@ -11,11 +11,16 @@ router = APIRouter(prefix="/api/points", tags=["points"])
 geocode_router = APIRouter(prefix="/api", tags=["geocode"])
 
 INPOST_SEARCH_URL = "https://inpost.pl/api/inpost-search"
+OSM_SEARCH_URL = "https://nominatim.openstreetmap.org/search"
 INPOST_SEARCH_HEADERS = {
     "User-Agent": "Mozilla/5.0",
     "Accept": "application/json",
     "Referer": "https://inpost.pl/znajdz-paczkomat",
     "X-Requested-With": "XMLHttpRequest",
+}
+OSM_SEARCH_HEADERS = {
+    "User-Agent": "InPostSmartPointFinder/0.1",
+    "Accept": "application/json",
 }
 
 
@@ -99,14 +104,7 @@ def geocode(q: str = Query(min_length=2, max_length=120)):
     if not query:
         return []
     try:
-        with httpx.Client(timeout=settings.request_timeout_seconds) as client:
-            response = client.get(
-                INPOST_SEARCH_URL,
-                params={"q": query, "fallback": "osm"},
-                headers=INPOST_SEARCH_HEADERS,
-            )
-            response.raise_for_status()
-            raw = response.json()
+        raw = _fetch_address_suggestions(query)
     except Exception as exc:
         raise HTTPException(status_code=502, detail="Address lookup failed right now.") from exc
 
@@ -125,6 +123,29 @@ def geocode(q: str = Query(min_length=2, max_length=120)):
                 continue
             suggestions.append({"display_name": display, "lat": lat, "lon": lon})
     return suggestions
+
+
+def _fetch_address_suggestions(query: str):
+    with httpx.Client(timeout=settings.request_timeout_seconds) as client:
+        try:
+            response = client.get(
+                INPOST_SEARCH_URL,
+                params={"q": query, "fallback": "osm"},
+                headers=INPOST_SEARCH_HEADERS,
+            )
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code not in {403, 429}:
+                raise
+
+        response = client.get(
+            OSM_SEARCH_URL,
+            params={"q": query, "format": "jsonv2", "limit": 8},
+            headers=OSM_SEARCH_HEADERS,
+        )
+        response.raise_for_status()
+        return response.json()
 
 
 def _parse_functions(functions: list[str] | None) -> list[str]:

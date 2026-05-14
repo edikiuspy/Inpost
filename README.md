@@ -4,6 +4,12 @@ InPost Smart Point Finder is a small web app for choosing a parcel point, not ju
 
 The concrete problem: a user wants to collect, send or return a parcel and needs a point that fits the job, is reachable, is open when needed and has enough context to avoid a bad choice. The app does not try to replace InPost Mobile or handle parcel operations. It only helps pick a point.
 
+Live app:
+
+```text
+https://inpost-rekrutacyjne.vercel.app
+```
+
 ## What is built
 
 - FastAPI backend that wraps the InPost points API and returns normalized, scored points.
@@ -45,6 +51,9 @@ Deployment and runtime:
 - The frontend image builds static assets with Node and serves them through Nginx.
 - Nginx also proxies `/api` requests from the frontend container to the backend service.
 - The backend cache is stored in a Docker volume at `/srv/backend/data`.
+- Vercel deployment builds `frontend/dist` as static output and exposes FastAPI through `api/index.py`.
+- The Vercel Python runtime is pinned to Python 3.14 with `.python-version`, `pyproject.toml` and `uv.lock`.
+- On Vercel, SQLite cache writes go to `/tmp/inpost-cache.sqlite3` because the deployed function bundle is read-only.
 
 ## Why this instead of a plain finder
 
@@ -89,7 +98,7 @@ That endpoint calls InPost's public search API used by the official finder:
 GET https://inpost.pl/api/inpost-search?q=<query>&fallback=osm
 ```
 
-The response is reduced to up to 8 suggestions with `display_name`, `lat` and `lon`. The frontend uses those coordinates as the user's selected location, then the main points search ranks parcel points around that location. If address lookup fails, the app reports a controlled `502` instead of breaking the point search API.
+The response is reduced to up to 8 suggestions with `display_name`, `lat` and `lon`. On Vercel, that public InPost endpoint can reject serverless traffic with `403`, so the backend falls back to OpenStreetMap Nominatim for address suggestions in that case. The frontend uses the returned coordinates as the user's selected location, then the main points search ranks parcel points around that location. If address lookup fails completely, the app reports a controlled `502` instead of breaking the point search API.
 
 ## Scoring model
 
