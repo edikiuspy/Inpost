@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #17201b;
+  background: #f7f5ef;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #e9eee9;
+  cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Ccircle cx='14' cy='14' r='10' fill='rgba(47,111,78,0.18)' stroke='%2317201b' stroke-width='2'/%3E%3Ccircle cx='14' cy='14' r='2.2' fill='%2317201b'/%3E%3C/svg%3E") 14 14, default;
+}
+
+.leaflet-container.leaflet-grab,
+.leaflet-grab {
+  cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Ccircle cx='14' cy='14' r='10' fill='rgba(47,111,78,0.22)' stroke='%2317201b' stroke-width='2'/%3E%3Ccircle cx='14' cy='14' r='2.2' fill='%2317201b'/%3E%3C/svg%3E") 14 14, grab;
+}
+
+.leaflet-container.leaflet-dragging,
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-container {
+  cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Ccircle cx='15' cy='15' r='11' fill='%23f4cc26' stroke='%2317201b' stroke-width='2'/%3E%3Ccircle cx='15' cy='15' r='3' fill='%2317201b'/%3E%3C/svg%3E") 15 15, grabbing;
+}
+
+.leaflet-interactive {
+  cursor: pointer !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+}
+
+.point-cluster {
+  align-items: center;
+  background: #292929;
+  border: 3px solid rgba(255, 255, 255, 0.88);
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  color: #f4cc26;
+  display: flex;
+  font-weight: 700;
+  justify-content: center;
+}
+
+.point-cluster span {
+  line-height: 1;
+}
+
+.distance-source-cursor {
+  align-items: center;
+  background: rgba(23, 32, 27, 0.12);
+  border: 2px solid #17201b;
+  border-radius: 999px;
+  box-shadow: 0 0 0 6px rgba(47, 111, 78, 0.18);
+  display: flex;
+  justify-content: center;
+}
+
+.distance-source-cursor::before,
+.distance-source-cursor::after {
+  background: #17201b;
+  content: "";
+  position: absolute;
+}
+
+.distance-source-cursor::before {
+  height: 2px;
+  width: 42px;
+}
+
+.distance-source-cursor::after {
+  height: 42px;
+  width: 2px;
+}
+
+.distance-source-cursor span {
+  background: #f4cc26;
+  border: 2px solid #17201b;
+  border-radius: 999px;
+  height: 10px;
+  position: relative;
+  width: 10px;
+  z-index: 1;
+}

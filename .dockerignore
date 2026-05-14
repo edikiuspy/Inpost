@@ -1,0 +1,17 @@
+node_modules
+frontend/node_modules
+frontend/dist
+frontend/dev.log
+frontend/.vite
+backend/__pycache__
+backend/**/__pycache__
+backend/.pytest_cache
+backend/data/cache.sqlite3
+backend/server.log
+.venv
+.git
+.gitignore
+*.log
+points.json
+image.png
+Firefox*.json

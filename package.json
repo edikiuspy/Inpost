@@ -1,0 +1,10 @@
+{
+  "name": "inpost-smart-point-finder",
+  "private": true,
+  "packageManager": "pnpm@10.20.0",
+  "scripts": {
+    "frontend:dev": "pnpm --dir frontend dev",
+    "frontend:build": "pnpm --dir frontend build",
+    "frontend:preview": "pnpm --dir frontend preview"
+  }
+}
